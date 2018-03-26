@@ -3,7 +3,7 @@ import socket
 import time
 from threading import Thread
 from Connectivity import connectivity
-from picamera import PiCamera
+from picamera import PiCamera, Color
 import datetime
 
 camera = PiCamera()
@@ -20,7 +20,7 @@ s.bind((socket.gethostbyname(hostname),5005))
 def confirmation():
 	s2.sendto((hostname+" Started").encode(), ("192.168.0.1",5007))
 
-def record(filename, location, video, amount=30):
+def record(filename, location, video, amount=3):
 	##record first 30 minutes of flight
 	if video == 1:
 		camera.start_recording(location+filename)
@@ -72,19 +72,19 @@ def take_picture():
 			print("[+]Conenction: Picture saved on server")
 			##Make server file and change date
 			camera.resolution = (1440, 1080)
-			camera.annotate_text = "Date: " + nowDate + "\nTime: " + nowTime + "\nAltitude: " + alt
+			camera.annotate_text = "Date: " + nowDate + "\nTime: " + nowTime + "\nAltitude: " + str(alt)
 			camera.annotate_text_size = 25
 			camera.annotate_foreground = Color('white')
 			##Take picture then save it on the file server
-			camera.continuous('/home/pi/serverPicutes/'+hostname+'-{timestamp:%H-%M-%S}-{counter:04d}.jpg')
+			camera.capture('/home/pi/serverPictures/'+hostname+'_{0:s}_{1:d}.jpg'.format(nowTime.replace(":","-"), pic))
 		else:
 			print("[!]No Connection: Picture saved locally")
 			camera.resolution = (1440, 1080)
-			camera.annotate_text = "Date: " + nowDate + "\nTime: " + nowTime + "\nAltitude: " + alt
+			camera.annotate_text = "Date: " + nowDate + "\nTime: " + nowTime + "\nAltitude: " + str(alt)
 			camera.annotate_text_size = 25
 			camera.annotate_foreground = Coloe('white')
 			##Change the path to the local folder
-			camera.continuous('/home/pi/localPictures/'+hostname+'-{timestamp:%H-%M-%S}-{counter:04d}.jpg')
+			camera.capture('/home/pi/localPictures/'+hostname+'_{0:s}_{1:d}.jpg'.format(nowTime.replace(":","-"), pic))
 		pic += 1
 		time.sleep(6)
 
@@ -102,7 +102,7 @@ def main():
 			Thread(target=confirmation).start()
 			Thread(target=take_picture).start()
 		##TEST THIS
-		if data.decode()[0:2] == "ALT":
+		if 'ALT' in data.decode():
 			print("Altitude has been set")
 
 			oldAlt = alt
