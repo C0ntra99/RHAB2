@@ -20,11 +20,11 @@ s.bind((socket.gethostbyname(hostname),5005))
 def confirmation():
 	s2.sendto((hostname+" Started").encode(), ("192.168.0.1",5007))
 
-def record(filename, location, video, time=30):
+def record(filename, location, video, amount=30):
 	##record first 30 minutes of flight
 	if video == 1:
 		camera.start_recording(location+filename)
-		time.sleep(time)
+		time.sleep(amount)
 		camera.stop_recording()
 		global endAlt
 		endAlt = alt
@@ -58,9 +58,9 @@ def take_picture():
 		nowTime = "{:02d}:{:02d}:{:02d}".format(log_time.hour, log_time.minute, log_time.second)
 			##Check Altitude to whatever we want
 		if 1 not in doneVideos:
-			camera.start_preview()
+			print('video start')
 			record(hostname+'-beginningVideo.h264', '/home/pi/localVideos/', 1)
-			camera.start_preview()
+			print('video stop')
 		if alt > 25000 and 2 not in doneVideos:
 			record(hostname+'-balloonPop.h264', '/home/pi/localVideos/',2)
 		elif alt < endAlt and 3 not in doneVideos:
@@ -91,8 +91,10 @@ def take_picture():
 	camera.close()
 
 def main():
+	global alt
+	global oldAlt
 	alt = 0
-	print("[=]Waiting for Run command")
+	print("[=]Waiting for command")
 	while True:
 		data, addr = s.recvfrom(1024)
 		if data.decode() == "Run":
