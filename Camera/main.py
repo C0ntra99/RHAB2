@@ -20,7 +20,7 @@ s.bind((socket.gethostbyname(hostname),5005))
 def confirmation():
 	s2.sendto((hostname+" Started").encode(), ("192.168.0.1",5007))
 
-def record(filename, location, video, amount=3):
+def record(filename, location, video, amount=1800):
 	##record first 30 minutes of flight
 	if video == 1:
 		camera.start_recording(location+filename)
@@ -82,7 +82,7 @@ def take_picture():
 			camera.resolution = (1440, 1080)
 			camera.annotate_text = "Date: " + nowDate + "\nTime: " + nowTime + "\nAltitude: " + str(alt)
 			camera.annotate_text_size = 25
-			camera.annotate_foreground = Coloe('white')
+			camera.annotate_foreground = Color('white')
 			##Change the path to the local folder
 			camera.capture('/home/pi/localPictures/'+hostname+'_{0:s}_{1:d}.jpg'.format(nowTime.replace(":","-"), pic))
 		pic += 1
