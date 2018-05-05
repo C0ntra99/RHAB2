@@ -2,10 +2,12 @@
 from threading import Thread
 from sense_hat import SenseHat
 from connection import connectivity
+import i2cSensors
 import time
 import datetime
 import socket
 import os
+
 
 ##Camera IP address
 ##Not how you use global
@@ -32,57 +34,51 @@ sense.clear()
 
 ##Log file stuff
 #global LOGFILE
-LOGFILE = open("/home/pi/Log.txt", "a")
+LOGFILE = open("/home/pi/RHAB2/MainPi/Log.txt", "a")
 
 def take_measurments():
 	logName = "Log-{:02d}-{:02d}-{:04d}.txt".format(log_time.month, log_time.day, log_time.year)
 	try:
-		with open("/home/pi/measurments/" + logName,"a+") as main:
+		with open("/home/pi/RHAB2/MainPi/measurments/" + logName,"a+") as main:
 			if main.read() == "":
 				main.write("{0:s},{1:s},{2:.04f},{3:2s},{4:4s},{5:4s},{6:4s}\n".format("date", "time", "humidity", "temperature", "pressure","altitude","ozone"))
 	except:
-		LOGFILE.write(log_time+"[!]Log file is locked.")
+		LOGFILE.write(str(log_time)+"[!]Log file is locked.")
 	while True:
-		with open("/home/pi/measurments/" + logName,"a") as main:
+		with open("/home/pi/RHAB2/MainPi/measurments/" + logName,"a") as main:
 			humidity = sense.get_humidity()
 			temperature = sense.get_temperature()
 			pressure = sense.get_pressure()
+			altitude = i2cSensors.get_altitude()
+			ozone = i2cSensors.get_ozone()
 			date = "{:02d}/{:02d}/{:04d}".format(log_time.month, log_time.day, log_time.year)
-			time = "{:02d}:{:02d}:{:02d}".format(log_time.hour, log_time.minute, log_time.second)
+			Time = "{:02d}:{:02d}:{:02d}".format(log_time.hour, log_time.minute, log_time.second)
 
-			string = "{0:s},{1:s},{2:.04f},{3:.02f},{4:.04f},{5:.04f},{6:.04f}\n".format(date, time, humidity, temperature, pressure, altitude, ozone)
+			string = "{0:s},{1:s},{2:.04f},{3:.02f},{4:.04f},{5:.04f},{6:.04f}\n".format(date, Time, humidity, temperature, pressure, altitude, ozone)
 			main.write(string)
 			##add acceleration and ozone
 
-		LOGFILE.write(log_time+"[]File has been written")
+		LOGFILE.write(str(log_time)+"[]File has been written")
 		time.sleep(6)
 
 
 def start_cameras():
-#	s.sendto("Run",(cam01_addr,5005))
-	s.sendto('Run'.encode(),("192.168.0.32", 5005))
+#	s.sendto("Run".encode(),(cam01_addr,5005))
+	s.sendto('Run'.encode(),(cam02_addr, 5005))
 
 
-	LOGFILE.write(log_time+"[=]Sending 'run' command...")
+	LOGFILE.write(str(log_time)+"[=]Sending 'run' command...")
 
 	data, addr= s2.recvfrom(1024)
 	if data:
 		sense.show_message(data.decode())
 
-		LOGFILE.write(log_time+"[+]Cameras have started")
+		LOGFILE.write(str(log_time)+"[+]Cameras have started")
 
 		##Also start the mainPi camera
 	else:
-		LOGFILE.write(log_time+"[!]Error cameras not started")
+		LOGFILE.write(str(log_time)+"[!]Error cameras not started")
 		start_cameras()
-
-def write_webPage(line, data):
-	with open('/var/www/html/index.html', 'r') as readPage:
-		lines = readPage.readlines()
-	lines[line] = data
-
-	with open('/var/www/html/index.html', 'w') as writePage:
-		writePage.writelines(lines)
 
 def joystick_input():
 	runningList = []
@@ -91,11 +87,11 @@ def joystick_input():
 		if event.action == "released" and event.direction == "middle":
 			if "take_measurments" not in runningList:
 				#what
-				print("take_measurments()")
-				write_webPage(2,'<p><span style="text-decoration: underline;"><strong>measurments: </strong></span><span style="color: #00ff00;">running</span></p>')
+				Thread(target=take_measurments()).start()
+				print("TEST")
 				sense.show_message("Taking measurments")
 
-				LOGFILE.write(log_time+"[+]Measurments have started")
+				LOGFILE.write(str(log_time)+"[+]Measurments have started")
 
 				runningList.append("take_measurments")
 			else:
@@ -104,9 +100,8 @@ def joystick_input():
 		if event.action == "released" and event.direction == "left":
 			if "start_cameras" not in runningList:
 				start_cameras()
-				write_webPage(3,'<p><span style="text-decoration: underline;"><strong>cameras: </strong></span><span style="color: #00ff00;">running</span></p>')
 
-				LOGFILE.write(log_time+"[+]Cameras started")
+				LOGFILE.write(str(log_time)+"[+]Cameras started")
 
 				runningList.append("start_cameras")
 			else:
@@ -115,16 +110,14 @@ def joystick_input():
 def keep_time():
 	global log_time
 	while True:
-		log_time = str(datetime.datetime.now())
+		log_time = datetime.datetime.now()
 		#Need to sleep
-		#time.sleep(0.5)
+		time.sleep(0.0000000000000000001)
 
 def main():
 	print("[=]Waiting on joystick input")
 	joystick_input()
 
-	thread_connectivity = Thread(target=connectivity)
-	thread_connectivity.start()
 
 if __name__ == "__main__":
 	thread_connectivity = Thread(target=connectivity)
@@ -132,8 +125,6 @@ if __name__ == "__main__":
 
 	thread_time = Thread(target=keep_time)
 	thread_time.start()
-	LOGFILE.write(log_time+"[+]Script started")
+	LOGFILE.write(str(log_time)+"[+]Script started")
 
-	os.system('rm /var/www/html/index.html')
-	os.system('cp /var/www/html/indexBAK.html /var/www/html/index.html')
 	main()
