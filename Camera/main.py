@@ -30,5 +30,6 @@ def take_picture():
 		else:
 			print("[!]No Connection: Picture saved locally")
 		time.sleep(1)
+
 thread_picture = Thread(target=take_picture)
 thread_picture.start()
