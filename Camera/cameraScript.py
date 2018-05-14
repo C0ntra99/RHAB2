@@ -18,7 +18,7 @@ camera = picamera.PiCamera()
 nowDate = str(now.month) + "-" + str(now.day) + "-" + str(now.year)
 nowTime = str(now.hour) + ":" + str(now.minute) + ":" + str(now.second)
 ##Get with cool python socket SHIT WHICH FUCKING SUCKS GOD DAMNIT
-pictureAltitude = "my ass"
+
 
 
 def cameraTakePicture(imageResolutionWidth, imageResotutionLength, nameOfImage):
@@ -61,5 +61,3 @@ def cameraTakeVideo(videoResolutionWidth, videoResotutionLength, videoRecordTime
 cameraTakePicture(1440,1080,'/test.jpg')
 
 #cameraTakeVideo(1080, 1080, 5, 'test.mp4')
-
-

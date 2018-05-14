@@ -56,7 +56,8 @@ def take_measurments():
 
 			string = "{0:s},{1:s},{2:.04f},{3:.02f},{4:.04f},{5:.04f},{6:.04f}\n".format(date, Time, humidity, temperature, pressure, altitude, ozone)
 			main.write(string)
-			##add acceleration and ozone
+			##TEST THIS
+			s.sendto(('ALT:'+altitude).encode(),(cam02_addr, 5005))
 
 		LOGFILE.write(str(log_time)+"[]File has been written")
 		time.sleep(6)
