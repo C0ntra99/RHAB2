@@ -30,7 +30,7 @@ while True:
 		global oldAlt
 		oldAlt = alt
 		global alt
-		alt = data.decode()[4:]
+		alt = float(data.decode()[4:])
 		print("Altitude: ", alt)
 
 	else:
