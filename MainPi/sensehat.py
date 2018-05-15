@@ -63,7 +63,7 @@ def log_measurments():
 		string = "{0:s},{1:s},{2:.04f},{3:.02f},{4:.04f},{5:.04f},{6:.04f},{7:.04f},{8:.02f}\n".format(date, Time, humidity, temperature, pressure, altitude, ozone, exPressure, exTemp)
 		main.write(string)
 		##TEST THIS
-		s.sendto(('ALT:'+altitude).encode(),(cam02_addr, 5005))
+		s.sendto(('ALT:'+str(altitude)).encode(),(cam02_addr, 5005))
 
 	LOGFILE.write(str(log_time)+"[]File has been written")
 
