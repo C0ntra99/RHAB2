@@ -46,7 +46,7 @@ def log_measurments():
 				main.write("{0:s},{1:s},{2:.04f},{3:2s},{4:4s},{5:4s},{6:4s},{7:4s},{8:4s}\n".format("date", "time", "humidity", "temperature", "pressure","altitude","ozone","ext press", "ext temp"))
 	except:
 		LOGFILE.write(str(log_time)+"[!]Log file is locked.")
-	
+
 	with open("/home/pi/RHAB2/MainPi/measurments/" + logName,"a") as main:
 		humidity = sense.get_humidity()
 		temperature = sense.get_temperature()
@@ -74,11 +74,11 @@ def measurement_thread():
 
 def camera_thread():
 	LOGFILE.write(str(log_time)+"[=]Sending 'run' command...")
-	
-	s.sendto("Run".encode(),(cam01_addr,5005))
-	data, addr= s2.recvfrom(1024)
-	parse_camera_data(data)
-	
+
+	#s.sendto("Run".encode(),(cam01_addr,5005))
+	#data, addr= s2.recvfrom(1024)
+	#parse_camera_data(data)
+
 	s.sendto('Run'.encode(),(cam02_addr, 5005))
 	data, addr= s2.recvfrom(1024)
 	parse_camera_data(data)
@@ -107,18 +107,18 @@ def main():
 
 	thread_time = Thread(target=keep_time)
 	thread_time.start()
-	
+
 	LOGFILE.write(str(log_time)+"[+]Script started")
-	
+
 	print("[=]Starting joystick input")
-	
+
 	runningList = []
 	while True:
 		event = sense.stick.wait_for_event()
 		if event.action == "released" and event.direction == "middle":
 			if "take_measurments" not in runningList:
 				Thread(target=measurement_thread).start()
-				
+
 				sense.show_message("Taking measurments")
 				LOGFILE.write(str(log_time)+"[+]Measurments have started")
 				runningList.append("take_measurments")
@@ -128,12 +128,12 @@ def main():
 		if event.action == "released" and event.direction == "left":
 			if "start_cameras" not in runningList:
 				Thread(target=camera_thread).start()
-				
+
 				LOGFILE.write(str(log_time)+"[+]Cameras have started")
 				runningList.append("start_cameras")
 			else:
 				continue
-	
+
 
 if __name__ == "__main__":
 	main()

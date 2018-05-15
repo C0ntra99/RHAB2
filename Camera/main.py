@@ -9,34 +9,14 @@ doneVideos = []
 hostname = socket.gethostname()
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-##Dynamically assign this
+
+
 s.bind((socket.gethostbyname(hostname),5005))
 
 def confirmation():
 	s2.sendto((hostname+" Started").encode(), ("192.168.0.1",5007))
 
-alt = 0
-print("[=]Waiting for Run command")
-while True:
-	data, addr = s.recvfrom(1024)
-	if data.decode() == "Run":
-		print("Sending ACK")
-		Thread(target=confirmation).start()
-		Thread(target=take_picture).start()
-	##TEST THIS
-	if data.decode()[0:2] == "ALT":
-		print("Altitude has been set")
-
-		global oldAlt
-		oldAlt = alt
-		global alt
-		alt = float(data.decode()[4:])
-		print("Altitude: ", alt)
-
-	else:
-		continue
-
-def record(filename, location, video, time=30):
+def record(filename, location, video, time=1800):
 	##record first 30 minutes of flight
 	if video == 1:
 		camera.start_recording(location+filename)
@@ -100,3 +80,26 @@ def take_picture():
 		time.sleep(6)
 
 	camera.close()
+
+def main():
+	alt = 0
+	print("[=]Waiting for Run command")
+	while True:
+		data, addr = s.recvfrom(1024)
+		if data.decode() == "Run":
+			print("Sending ACK")
+			Thread(target=confirmation).start()
+			Thread(target=take_picture).start()
+		##TEST THIS
+		if data.decode()[0:2] == "ALT":
+			print("Altitude has been set")
+
+			oldAlt = alt
+			alt = float(data.decode()[4:])
+			print("Altitude: ", alt)
+
+		else:
+			continue
+
+if __name__ == "__main__":
+	main()
