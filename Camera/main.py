@@ -59,12 +59,12 @@ def take_picture():
 			##Check Altitude to whatever we want
 		if 1 not in doneVideos:
 			camera.start_preview()
-			record(hostname+'-beginningVideo.h264', '/localVideos/', 1)
+			record(hostname+'-beginningVideo.h264', '/home/pi/localVideos/', 1)
 			camera.start_preview()
 		if alt > 25000 and 2 not in doneVideos:
-			record(hostname+'-balloonPop.h264', '/localVideos/',2)
+			record(hostname+'-balloonPop.h264', '/home/pi/localVideos/',2)
 		elif alt < endAlt and 3 not in doneVideos:
-			record(hostname+'-balloonEnd.h264', '/localVideos/',3)
+			record(hostname+'-balloonEnd.h264', '/home/pi/localVideos/',3)
 			break
 		else:
 			pass
@@ -76,7 +76,7 @@ def take_picture():
 			camera.annotate_text_size = 25
 			camera.annotate_foreground = Color('white')
 			##Take picture then save it on the file server
-			camera.continuous('/serverPicutes/'+hostname+'-{timestamp:%H-%M-%S}-{counter:04d}.jpg')
+			camera.continuous('/home/pi/serverPicutes/'+hostname+'-{timestamp:%H-%M-%S}-{counter:04d}.jpg')
 		else:
 			print("[!]No Connection: Picture saved locally")
 			camera.resolution = (1440, 1080)
@@ -84,7 +84,7 @@ def take_picture():
 			camera.annotate_text_size = 25
 			camera.annotate_foreground = Coloe('white')
 			##Change the path to the local folder
-			camera.continuous('/localPicutes/'+hostname+'-{timestamp:%H-%M-%S}-{counter:04d}.jpg')
+			camera.continuous('/home/pi/localPictures/'+hostname+'-{timestamp:%H-%M-%S}-{counter:04d}.jpg')
 		pic += 1
 		time.sleep(6)
 
