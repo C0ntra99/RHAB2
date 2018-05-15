@@ -5,7 +5,7 @@ from threading import Thread
 from Connectivity import connectivity
 from picamera import PiCamera
 
-camera = PiCamera.camera()
+camera = PiCamera()
 
 ##import picamera SHIT
 doneVideos = []
