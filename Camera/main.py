@@ -72,7 +72,7 @@ def take_picture():
 			camera.annotate_text_size = 25
 			camera.annotate_foreground = Color('white')
 			##Take picture then save it on the file server
-			camera.continuous('/serverPicutes/'+hostname+'-{timestamp:%H-%M-%S}-{counter:04d}.jpg'))
+			camera.continuous('/serverPicutes/'+hostname+'-{timestamp:%H-%M-%S}-{counter:04d}.jpg')
 		else:
 			print("[!]No Connection: Picture saved locally")
 			camera.resolution = (1440, 1080)
@@ -80,7 +80,7 @@ def take_picture():
 			camera.annotate_text_size = 25
 			camera.annotate_foreground = Coloe('white')
 			##Change the path to the local folder
-			camera.continuous('/localPicutes/'+hostname+'-{timestamp:%H-%M-%S}-{counter:04d}.jpg'))
+			camera.continuous('/localPicutes/'+hostname+'-{timestamp:%H-%M-%S}-{counter:04d}.jpg')
 		pic += 1
 		time.sleep(6)
 
