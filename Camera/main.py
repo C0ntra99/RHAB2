@@ -4,6 +4,7 @@ import time
 from threading import Thread
 from Connectivity import connectivity
 from picamera import PiCamera
+import datetime
 
 camera = PiCamera()
 
@@ -52,6 +53,7 @@ def is_falling(oldAlt):
 def take_picture():
 	pic = 0
 	while True:
+		log_time = datetime.datetime.now()
 		nowDate = "{:02d}/{:02d}/{:04d}".format(log_time.month, log_time.day, log_time.year)
 		nowTime = "{:02d}:{:02d}:{:02d}".format(log_time.hour, log_time.minute, log_time.second)
 			##Check Altitude to whatever we want
