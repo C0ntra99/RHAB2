@@ -3,6 +3,9 @@ import socket
 import time
 from threading import Thread
 from Connectivity import connectivity
+from picamera import PiCamera
+
+camera = PiCamera.camera()
 
 ##import picamera SHIT
 doneVideos = []
@@ -49,6 +52,8 @@ def is_falling(oldAlt):
 def take_picture():
 	pic = 0
 	while True:
+		nowDate = "{:02d}/{:02d}/{:04d}".format(log_time.month, log_time.day, log_time.year)
+		nowTime = "{:02d}:{:02d}:{:02d}".format(log_time.hour, log_time.minute, log_time.second)
 			##Check Altitude to whatever we want
 		if 1 not in doneVideos:
 			record(hostname+'-beginningVideo.h264', '/localVideos/', 1)
