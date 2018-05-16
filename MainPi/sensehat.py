@@ -79,10 +79,10 @@ def measurement_thread():
 def camera_thread():
 	LOGFILE.write(str(log_time)+"[=]Sending 'run' command...")
 
-	#s.sendto("Run".encode(),(cam01_addr,5005))
-	#data, addr= s2.recvfrom(1024)
+	s.sendto("Run".encode(),(cam01_addr,5005))
+	data, addr= s2.recvfrom(1024)
 	Thread(target=camera1_blink).start()
-	#parse_camera_data(data)
+	parse_camera_data(data)
 
 	s.sendto('Run'.encode(),(cam02_addr, 5005))
 	data, addr= s2.recvfrom(1024)
