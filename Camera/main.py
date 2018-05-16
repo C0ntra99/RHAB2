@@ -5,6 +5,7 @@ from threading import Thread
 from Connectivity import connectivity
 from picamera import PiCamera, Color
 import datetime
+import share
 
 camera = PiCamera()
 camera.resolution = (1920, 1080)
