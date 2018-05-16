@@ -7,6 +7,7 @@ import i2cSensors
 import time
 import datetime
 import socket
+import share
 import os
 
 
@@ -54,10 +55,9 @@ def log_measurments():
 		temperature = sense.get_temperature()
 		pressure = sense.get_pressure()
 		altitude, exTemp, exPressure = i2cSensors.get_externals()
-		global oldAlt
-		global alt
-		oldAlt = alt
-		alt = altitude
+		share.init()
+		share.oldAlt = alt
+		share.alt = altitude
 		ozone = i2cSensors.get_ozone()
 		date = "{:02d}/{:02d}/{:04d}".format(log_time.month, log_time.day, log_time.year)
 		Time = "{:02d}:{:02d}:{:02d}".format(log_time.hour, log_time.minute, log_time.second)
