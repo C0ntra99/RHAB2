@@ -16,7 +16,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 
-s.bind((socket.gethostbyname(hostname),5005))
+s.bind(('0.0.0.0',5005))
 
 def confirmation():
 	s2.sendto((hostname+" Started").encode(), ("192.168.0.1",5007))
@@ -76,6 +76,7 @@ def take_picture():
 			break
 		else:
 			pass
+		print('loop:'+pic)
 		if connectivity():
 			print("[+]Conenction: Picture saved on server")
 			##Make server file and change date
