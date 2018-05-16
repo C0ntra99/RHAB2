@@ -13,7 +13,7 @@ doneVideos = []
 hostname = "MainPi"
 share.init()
 
-def record(filename, location, video, amount=5):
+def record(filename, location, video, amount=120):
 	camera.resolution = (1920, 1080)
 	##record first 30 minutes of flight
 	if video == 1:
@@ -28,6 +28,7 @@ def record(filename, location, video, amount=5):
 		camera.start_recording(location+filename)
 		while not is_falling():
 			time.sleep(1)
+		time.sleep(60)
 		camera.stop_recording()
 		doneVideos.append(2)
 	##get last little bit of the flight
@@ -56,9 +57,13 @@ def take_picture():
 			record(hostname+'-beginningVideo.h264', '/home/pi/localVideos/', 1)
 			print('video stop')
 		if share.alt > 25000 and 2 not in doneVideos:
+			print('Pop start')
 			record(hostname+'-balloonPop.h264', '/home/pi/localVideos/',2)
+			print('Pop stop')
 		elif share.alt < endAlt and 3 not in doneVideos:
+			print('End start')
 			record(hostname+'-balloonEnd.h264', '/home/pi/localVideos/',3)
+			print('End stop')
 			break
 		else:
 			pass
