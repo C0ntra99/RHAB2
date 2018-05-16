@@ -2,6 +2,7 @@
 from threading import Thread
 from sense_hat import SenseHat
 from connection import connectivity
+import mainCameraScript
 import i2cSensors
 import time
 import datetime
@@ -65,6 +66,7 @@ def log_measurments():
 		main.write(string)
 		Thread(target=measurement_blink, kwargs={'justOnce':True}).start()
 		##TEST THIS
+		s.sendto(('ALT:'+str(altitude)).encode(),(cam01_addr, 5005))
 		s.sendto(('ALT:'+str(altitude)).encode(),(cam02_addr, 5005))
 
 	LOGFILE.write(str(log_time)+"[]File has been written")
@@ -148,6 +150,23 @@ def camera2_blink(sleepTime=0.5, justOnce=False):
 	sense.set_pixel(5,0,[0,0,255])
 	time.sleep(sleepTime)
 	sense.set_pixel(5,0,[0,0,0])
+	
+def cameraMain_blink(sleepTime=0.5, justOnce=False):
+	def stop():
+		stop = True
+	stop = False
+	on = False
+	while not stop and not justOnce:
+		if on:
+			sense.set_pixel(3,0,[0,0,0])
+			on = False
+		else:
+			sense.set_pixel(3,0,[0,0,255])
+			on = True
+		time.sleep(sleepTime)
+	sense.set_pixel(3,0,[0,0,255])
+	time.sleep(sleepTime)
+	sense.set_pixel(3,0,[0,0,0])
 
 def keep_time():
 	global log_time
