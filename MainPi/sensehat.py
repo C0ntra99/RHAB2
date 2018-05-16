@@ -176,6 +176,7 @@ def keep_time():
 		time.sleep(0.00001)
 
 def main_camera():
+	Thread(target=cameraMain_blink).start()
 	mainCameraScript.take_picture()
 
 def main():
