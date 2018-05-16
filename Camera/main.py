@@ -7,6 +7,7 @@ from picamera import PiCamera, Color
 import datetime
 
 camera = PiCamera()
+camera.resolution = (1920, 1080)
 
 ##import picamera SHIT
 doneVideos = []
@@ -21,6 +22,7 @@ def confirmation():
 	s2.sendto((hostname+" Started").encode(), ("192.168.0.1",5007))
 
 def record(filename, location, video, amount=1800):
+	camera.resolution = (1920, 1080)
 	##record first 30 minutes of flight
 	if video == 1:
 		camera.start_recording(location+filename)
@@ -71,7 +73,7 @@ def take_picture():
 		if connectivity():
 			print("[+]Conenction: Picture saved on server")
 			##Make server file and change date
-			camera.resolution = (1440, 1080)
+			camera.resolution = (3280, 2464)
 			camera.annotate_text = "Date: " + nowDate + "\nTime: " + nowTime + "\nAltitude: " + str(alt)
 			camera.annotate_text_size = 25
 			camera.annotate_foreground = Color('white')
@@ -79,7 +81,7 @@ def take_picture():
 			camera.capture('/home/pi/serverPictures/'+hostname+'_{0:s}_{1:d}.jpg'.format(nowTime.replace(":","-"), pic))
 		else:
 			print("[!]No Connection: Picture saved locally")
-			camera.resolution = (1440, 1080)
+			camera.resolution = (3280, 2464)
 			camera.annotate_text = "Date: " + nowDate + "\nTime: " + nowTime + "\nAltitude: " + str(alt)
 			camera.annotate_text_size = 25
 			camera.annotate_foreground = Color('white')
