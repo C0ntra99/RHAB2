@@ -8,6 +8,8 @@ camera = PiCamera()
 
 doneVideos = []
 
+hostname = "MainPi"
+
 def record(filename, location, video, amount=1800):
 	##record first 30 minutes of flight
 	if video == 1:
