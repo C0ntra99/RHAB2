@@ -31,6 +31,7 @@ s2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s2.bind(("192.168.0.1",5007))
 sense = SenseHat()
 sense.clear()
+hostname = socket.gethostname()
 
 alt = 0
 
@@ -154,6 +155,9 @@ def keep_time():
 		log_time = datetime.datetime.now()
 		#Need to sleep
 		time.sleep(0.00001)
+
+def main_camera():
+	camera.take_picture()
 
 def main():
 	thread_connectivity = Thread(target=connectivity)
