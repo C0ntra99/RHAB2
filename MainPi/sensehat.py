@@ -94,6 +94,34 @@ def parse_camera_data(data):
 		LOGFILE.write(str(log_time)+"[!]Error cameras not started")
 		start_cameras()
 
+def measurement_blink(sleepTime=0.5):
+	def stop():
+		stop = True
+	stop = False
+	on = False
+	while not stop:
+		if on:
+			sense.set_pixel(7,7,[0,0,0])
+			on = False
+		else:
+			sense.set_pixel(7,7,[255,0,0])
+			on = True
+		time.sleep(sleepTime)
+	
+def camera_blink(sleepTime=0.5):
+	def stop():
+		stop = True
+	stop = False
+	on = False
+	while not stop:
+		if on:
+			sense.set_pixel(7,0,[0,0,0])
+			on = False
+		else:
+			sense.set_pixel(7,0,[0,0,255])
+			on = True
+		time.sleep(sleepTime)
+
 def keep_time():
 	global log_time
 	while True:
@@ -118,6 +146,7 @@ def main():
 		if event.action == "released" and event.direction == "middle":
 			if "take_measurments" not in runningList:
 				Thread(target=measurement_thread).start()
+				Thread(target=measurement_blink).start()
 
 				sense.show_message("Taking measurments")
 				LOGFILE.write(str(log_time)+"[+]Measurments have started")
@@ -128,6 +157,7 @@ def main():
 		if event.action == "released" and event.direction == "left":
 			if "start_cameras" not in runningList:
 				Thread(target=camera_thread).start()
+				Thread(target=camera_blink).start()
 
 				LOGFILE.write(str(log_time)+"[+]Cameras have started")
 				runningList.append("start_cameras")
