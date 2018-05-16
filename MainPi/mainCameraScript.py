@@ -1,24 +1,12 @@
 #!/usr/bin/python3
-import socket
 import time
 from threading import Thread
-from Connectivity import connectivity
 from picamera import PiCamera, Color
 import datetime
 
 camera = PiCamera()
 
-##import picamera SHIT
 doneVideos = []
-hostname = socket.gethostname()
-s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-
-#s.bind((socket.gethostbyname(hostname),5005))
-
-def confirmation():
-	s2.sendto((hostname+" Started").encode(), ("192.168.0.1",5007))
 
 def record(filename, location, video, amount=1800):
 	##record first 30 minutes of flight
@@ -68,49 +56,15 @@ def take_picture():
 			break
 		else:
 			pass
-		if connectivity():
-			print("[+]Conenction: Picture saved on server")
-			##Make server file and change date
-			camera.resolution = (1440, 1080)
-			camera.annotate_text = "Date: " + nowDate + "\nTime: " + nowTime + "\nAltitude: " + str(alt)
-			camera.annotate_text_size = 25
-			camera.annotate_foreground = Color('white')
-			##Take picture then save it on the file server
-			camera.capture('/home/pi/serverPictures/'+hostname+'_{0:s}_{1:d}.jpg'.format(nowTime.replace(":","-"), pic))
-		else:
-			print("[!]No Connection: Picture saved locally")
-			camera.resolution = (1440, 1080)
-			camera.annotate_text = "Date: " + nowDate + "\nTime: " + nowTime + "\nAltitude: " + str(alt)
-			camera.annotate_text_size = 25
-			camera.annotate_foreground = Color('white')
-			##Change the path to the local folder
-			camera.capture('/home/pi/localPictures/'+hostname+'_{0:s}_{1:d}.jpg'.format(nowTime.replace(":","-"), pic))
+		print("[+]Conenction: Picture saved on server")
+		##Make server file and change date
+		camera.resolution = (1440, 1080)
+		camera.annotate_text = "Date: " + nowDate + "\nTime: " + nowTime + "\nAltitude: " + str(alt)
+		camera.annotate_text_size = 25
+		camera.annotate_foreground = Color('white')
+		##Take picture then save it on the file server
+		camera.capture('/home/pi/serverPictures/'+hostname+'_{0:s}_{1:d}.jpg'.format(nowTime.replace(":","-"), pic))
 		pic += 1
 		time.sleep(6)
 
 	camera.close()
-
-def main():
-	global alt
-	global oldAlt
-	alt = 0
-	print("[=]Waiting for command")
-	while True:
-		data, addr = s.recvfrom(1024)
-		if data.decode() == "Run":
-			print("Sending ACK")
-			Thread(target=confirmation).start()
-			Thread(target=take_picture).start()
-		##TEST THIS
-		if 'ALT' in data.decode():
-			print("Altitude has been set")
-
-			oldAlt = alt
-			alt = float(data.decode()[4:])
-			print("Altitude: ", alt)
-
-		else:
-			continue
-
-if __name__ == "__main__":
-	main()
