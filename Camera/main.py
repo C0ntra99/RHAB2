@@ -76,7 +76,6 @@ def take_picture():
 			break
 		else:
 			pass
-		print('loop:'+pic)
 		if connectivity():
 			print("[+]Conenction: Picture saved on server")
 			##Make server file and change date
@@ -112,11 +111,9 @@ def main():
 			Thread(target=take_picture).start()
 		##TEST THIS
 		if 'ALT' in data.decode():
-			print("Altitude has been set")
 
 			oldAlt = alt
 			alt = float(data.decode()[4:])
-			print("Altitude: ", alt)
 
 		else:
 			continue

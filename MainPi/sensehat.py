@@ -82,12 +82,12 @@ def camera_thread():
 	s.sendto("Run".encode(),(cam01_addr,5005))
 	data, addr= s2.recvfrom(1024)
 	Thread(target=camera1_blink).start()
-	Thread(target=parse_camera_data, arg=(data)).start()
+	Thread(target=parse_camera_data, args=(data,)).start()
 
 	s.sendto('Run'.encode(),(cam02_addr, 5005))
 	data, addr= s2.recvfrom(1024)
 	Thread(target=camera2_blink).start()
-	Thread(target=parse_camera_data, arg=(data)).start()
+	Thread(target=parse_camera_data, args=(data,)).start()
 
 def parse_camera_data(data):
 	if data:
