@@ -62,6 +62,7 @@ def log_measurments():
 
 		string = "{0:s},{1:s},{2:.04f},{3:.02f},{4:.04f},{5:.04f},{6:.04f},{7:.04f},{8:.02f}\n".format(date, Time, humidity, temperature, pressure, altitude, ozone, exPressure, exTemp)
 		main.write(string)
+		Thread(target=measurement_blink, args=(justOnce=True)).start()
 		##TEST THIS
 		s.sendto(('ALT:'+str(altitude)).encode(),(cam02_addr, 5005))
 
@@ -86,6 +87,7 @@ def camera_thread():
 def parse_camera_data(data):
 	if data:
 		sense.show_message(data.decode())
+		Thread(target=camera_blink).start()
 
 		LOGFILE.write(str(log_time)+"[+]Cameras have started")
 
@@ -94,12 +96,12 @@ def parse_camera_data(data):
 		LOGFILE.write(str(log_time)+"[!]Error cameras not started")
 		start_cameras()
 
-def measurement_blink(sleepTime=0.5):
+def measurement_blink(sleepTime=0.5, justOnce=False):
 	def stop():
 		stop = True
 	stop = False
 	on = False
-	while not stop:
+	while not stop and not justOnce:
 		if on:
 			sense.set_pixel(7,7,[0,0,0])
 			on = False
@@ -107,13 +109,16 @@ def measurement_blink(sleepTime=0.5):
 			sense.set_pixel(7,7,[255,0,0])
 			on = True
 		time.sleep(sleepTime)
+	sense.set_pixel(7,7,[0,0,0])
+	time.sleep(sleepTime)
+	sense.set_pixel(7,7,[255,0,0])
 	
-def camera_blink(sleepTime=0.5):
+def camera_blink(sleepTime=0.5, justOnce=False):
 	def stop():
 		stop = True
 	stop = False
 	on = False
-	while not stop:
+	while not stop and not justOnce:
 		if on:
 			sense.set_pixel(7,0,[0,0,0])
 			on = False
@@ -121,13 +126,16 @@ def camera_blink(sleepTime=0.5):
 			sense.set_pixel(7,0,[0,0,255])
 			on = True
 		time.sleep(sleepTime)
+	sense.set_pixel(7,7,[0,0,0])
+	time.sleep(sleepTime)
+	sense.set_pixel(7,7,[255,0,0])
 
 def keep_time():
 	global log_time
 	while True:
 		log_time = datetime.datetime.now()
 		#Need to sleep
-		time.sleep(0.000000001)
+		time.sleep(0.00001)
 
 def main():
 	thread_connectivity = Thread(target=connectivity)
@@ -146,7 +154,6 @@ def main():
 		if event.action == "released" and event.direction == "middle":
 			if "take_measurments" not in runningList:
 				Thread(target=measurement_thread).start()
-				Thread(target=measurement_blink).start()
 
 				sense.show_message("Taking measurments")
 				LOGFILE.write(str(log_time)+"[+]Measurments have started")
@@ -157,7 +164,6 @@ def main():
 		if event.action == "released" and event.direction == "left":
 			if "start_cameras" not in runningList:
 				Thread(target=camera_thread).start()
-				Thread(target=camera_blink).start()
 
 				LOGFILE.write(str(log_time)+"[+]Cameras have started")
 				runningList.append("start_cameras")
