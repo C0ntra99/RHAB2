@@ -67,7 +67,7 @@ def take_picture():
 		camera.annotate_text_size = 25
 		camera.annotate_foreground = Color('white')
 		##Take picture then save it on the file server
-		camera.capture('/home/pi/serverPictures/'+hostname+'_{0:s}_{1:d}.jpg'.format(nowTime.replace(":","-"), pic))
+		camera.capture('/home/pi/localPictures/'+hostname+'_{0:s}_{1:d}.jpg'.format(nowTime.replace(":","-"), pic))
 		pic += 1
 		time.sleep(6)
 
