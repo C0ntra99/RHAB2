@@ -157,7 +157,7 @@ def keep_time():
 		time.sleep(0.00001)
 
 def main_camera():
-	camera.take_picture()
+	mainCameraScript.take_picture()
 
 def main():
 	thread_connectivity = Thread(target=connectivity)
@@ -186,6 +186,7 @@ def main():
 		if event.action == "released" and event.direction == "left":
 			if "start_cameras" not in runningList:
 				Thread(target=camera_thread).start()
+				Thread(target=main_camera).start()
 
 				LOGFILE.write(str(log_time)+"[+]Cameras have started")
 				runningList.append("start_cameras")
