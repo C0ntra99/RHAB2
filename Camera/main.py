@@ -21,7 +21,7 @@ s.bind((socket.gethostbyname(hostname),5005))
 def confirmation():
 	s2.sendto((hostname+" Started").encode(), ("192.168.0.1",5007))
 
-def record(filename, location, video, amount=1800):
+def record(filename, location, video, amount=120):
 	camera.resolution = (1920, 1080)
 	##record first 30 minutes of flight
 	if video == 1:
@@ -36,6 +36,8 @@ def record(filename, location, video, amount=1800):
 		camera.start_recording(location+filename)
 		while not if_falling():
 			time.sleep(1)
+		time.sleep(10)
+		##CHANGE
 		camera.stop_recording()
 		doneVideos.append(2)
 	##get last little bit of the flight
@@ -47,7 +49,7 @@ def record(filename, location, video, amount=1800):
 		doneVideos.append(3)
 
 def is_falling(oldAlt):
-	if oldAlt > alt:
+	if oldAlt > (alt + 10):
 		return True
 	else:
 		return False
@@ -63,10 +65,14 @@ def take_picture():
 			print('video start')
 			record(hostname+'-beginningVideo.h264', '/home/pi/localVideos/', 1)
 			print('video stop')
-		if alt > 25000 and 2 not in doneVideos:
+		if share.alt > 25000 and 2 not in doneVideos:
+			print('Pop start')
 			record(hostname+'-balloonPop.h264', '/home/pi/localVideos/',2)
-		elif alt < endAlt and 3 not in doneVideos:
+			print('Pop stop')
+		elif share.alt < endAlt and 3 not in doneVideos:
+			print('End start')
 			record(hostname+'-balloonEnd.h264', '/home/pi/localVideos/',3)
+			print('End stop')
 			break
 		else:
 			pass

@@ -28,7 +28,8 @@ def record(filename, location, video, amount=120):
 		camera.start_recording(location+filename)
 		while not is_falling():
 			time.sleep(1)
-		time.sleep(60)
+		time.sleep(10)
+		##CHANGE
 		camera.stop_recording()
 		doneVideos.append(2)
 	##get last little bit of the flight
@@ -40,7 +41,7 @@ def record(filename, location, video, amount=120):
 		doneVideos.append(3)
 
 def is_falling():
-	if share.oldAlt > share.alt:
+	if share.oldAlt > (share.alt + 10):
 		return True
 	else:
 		return False
