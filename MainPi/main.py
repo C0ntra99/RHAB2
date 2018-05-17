@@ -67,6 +67,7 @@ def log_measurments():
 		##TEST THIS
 		s.sendto(('ALT:'+str(altitude)).encode(),(cam01_addr, 5005))
 		s.sendto(('ALT:'+str(altitude)).encode(),(cam02_addr, 5005))
+		print("Altitude:", altitude)
 
 	LOGFILE.write(str(log_time)+"[]File has been written")
 
@@ -211,7 +212,7 @@ def main():
 		if event.action == "released" and event.direction == "middle":
 			if "take_measurments" not in runningList:
 				Thread(target=measurement_thread).start()
-
+				print("Take measuements")
 				sense.show_message("Taking measurments")
 				LOGFILE.write(str(log_time)+"[+]Measurments have started")
 				runningList.append("take_measurments")
