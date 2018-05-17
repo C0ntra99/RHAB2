@@ -55,13 +55,14 @@ def log_measurments():
 		temperature = sense.get_temperature()
 		pressure = sense.get_pressure()
 		altitude, exTemp, exPressure = i2cSensors.get_externals()
+		altitude = round(altitude)
 		share.oldAlt = share.alt
 		share.alt = altitude
 		ozone = i2cSensors.get_ozone()
 		date = "{:02d}/{:02d}/{:04d}".format(log_time.month, log_time.day, log_time.year)
 		Time = "{:02d}:{:02d}:{:02d}".format(log_time.hour, log_time.minute, log_time.second)
 
-		string = "{0:s},{1:s},{2:.04f},{3:.02f},{4:.04f},{5:.04f},{6:.04f},{7:.04f},{8:.02f}\n".format(date, Time, humidity, temperature, pressure, altitude, ozone, exPressure, exTemp)
+		string = "{0:s},{1:s},{2:.04f},{3:.02f},{4:.04f},{5:6d},{6:.04f},{7:.04f},{8:.02f}\n".format(date, Time, humidity, temperature, pressure, altitude, ozone, exPressure, exTemp)
 		main.write(string)
 		Thread(target=measurement_blink, kwargs={'justOnce':True}).start()
 		##TEST THIS
