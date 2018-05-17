@@ -34,6 +34,7 @@ s2.bind(("192.168.0.1",5007))
 sense = SenseHat()
 sense.clear()
 hostname = socket.gethostname()
+share.init()
 
 breakNow = False
 ##Log file stuff
@@ -190,7 +191,6 @@ def main_camera():
 	mainCameraScript.take_picture()
 
 def main():
-	share.init()
 	
 	thread_connectivity = Thread(target=connectivity)
 	thread_connectivity.start()
