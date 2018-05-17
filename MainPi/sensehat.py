@@ -35,8 +35,7 @@ sense = SenseHat()
 sense.clear()
 hostname = socket.gethostname()
 
-alt = 0
-
+breakNow = False
 ##Log file stuff
 #global LOGFILE
 LOGFILE = open("/home/pi/RHAB2/MainPi/Log.txt", "a")
@@ -44,8 +43,8 @@ LOGFILE = open("/home/pi/RHAB2/MainPi/Log.txt", "a")
 def log_measurments():
 	logName = "Log-{:02d}-{:02d}-{:04d}.txt".format(log_time.month, log_time.day, log_time.year)
 	try:
-		with open("/home/pi/RHAB2/MainPi/measurments/" + logName,"a+") as main:
-			if main.read() == "":
+		if not os.path.exists("/home/pi/RHAB2/MainPi/measurments/" + logName):
+			with open("/home/pi/RHAB2/MainPi/measurments/" + logName,"a+") as main:
 				main.write("{0:s},{1:s},{2:.04f},{3:2s},{4:4s},{5:4s},{6:4s},{7:4s},{8:4s}\n".format("date", "time", "humidity", "temperature", "pressure","altitude","ozone","ext press", "ext temp"))
 	except:
 		LOGFILE.write(str(log_time)+"[!]Log file is locked.")
@@ -55,8 +54,7 @@ def log_measurments():
 		temperature = sense.get_temperature()
 		pressure = sense.get_pressure()
 		altitude, exTemp, exPressure = i2cSensors.get_externals()
-		share.init()
-		share.oldAlt = alt
+		share.oldAlt = share.alt
 		share.alt = altitude
 		ozone = i2cSensors.get_ozone()
 		date = "{:02d}/{:02d}/{:04d}".format(log_time.month, log_time.day, log_time.year)
@@ -81,13 +79,21 @@ def camera_thread():
 
 	s.sendto("Run".encode(),(cam01_addr,5005))
 	data, addr= s2.recvfrom(1024)
-	Thread(target=camera1_blink).start()
+	global camera1_blink_thread
+	camera1_blink_thread = Thread(target=camera1_blink).start()
 	Thread(target=parse_camera_data, args=(data,)).start()
 
 	s.sendto('Run'.encode(),(cam02_addr, 5005))
 	data, addr= s2.recvfrom(1024)
-	Thread(target=camera2_blink).start()
+	global camera2_blink_thread
+	camera2_blink_thread = Thread(target=camera2_blink).start()
 	Thread(target=parse_camera_data, args=(data,)).start()
+
+def receive_break():
+	data, addr= s2.recvfrom(1024)
+	if data.decode() == "BREAK":
+		global breakNow
+		breakNow = True
 
 def parse_camera_data(data):
 	if data:
@@ -126,6 +132,8 @@ def camera1_blink(sleepTime=0.5, justOnce=False):
 		if on:
 			sense.set_pixel(7,0,[0,0,0])
 			on = False
+			if breakNow:
+				return
 		else:
 			sense.set_pixel(7,0,[0,0,255])
 			on = True
@@ -143,6 +151,8 @@ def camera2_blink(sleepTime=0.5, justOnce=False):
 		if on:
 			sense.set_pixel(5,0,[0,0,0])
 			on = False
+			if breakNow:
+				return
 		else:
 			sense.set_pixel(5,0,[0,0,255])
 			on = True
@@ -156,7 +166,7 @@ def cameraMain_blink(sleepTime=0.5, justOnce=False):
 		stop = True
 	stop = False
 	on = False
-	while not stop and not justOnce:
+	while not stop and not justOnce and not share.done:
 		if on:
 			sense.set_pixel(3,0,[0,0,0])
 			on = False
@@ -180,6 +190,8 @@ def main_camera():
 	mainCameraScript.take_picture()
 
 def main():
+	share.init()
+	
 	thread_connectivity = Thread(target=connectivity)
 	thread_connectivity.start()
 
