@@ -21,7 +21,7 @@ s.bind(('0.0.0.0',5005))
 def confirmation():
 	s2.sendto((hostname+" Started").encode(), ("192.168.0.1",5007))
 
-def record(filename, location, video, amount=120):
+def record(filename, location, video, amount=120):##CHANGE
 	camera.resolution = (1920, 1080)
 	##record first 30 minutes of flight
 	if video == 1:
@@ -34,8 +34,8 @@ def record(filename, location, video, amount=120):
 	##try to get the pop at 25000 meter
 	if video == 2:
 		camera.start_recording(location+filename)
-		while not if_falling():
-			time.sleep(1)
+		while not is_falling():
+			time.sleep(6)
 		time.sleep(10)
 		##CHANGE
 		camera.stop_recording()
@@ -43,8 +43,8 @@ def record(filename, location, video, amount=120):
 	##get last little bit of the flight
 	if video == 3:
 		camera.start_recording(location+filename)
-		while not alt == oldAlt:
-			time.sleep(1)
+		while not alt == oldAlt and 3 not in doneVideos and 2 in doneVideos:
+			time.sleep(6)
 		camera.stop_recording()
 		doneVideos.append(3)
 
