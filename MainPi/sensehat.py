@@ -98,6 +98,7 @@ def receive_break():
 
 def parse_camera_data(data):
 	if data:
+		sense.clear()
 		sense.show_message(data.decode())
 
 		LOGFILE.write(str(log_time)+"[+]Cameras have started")
