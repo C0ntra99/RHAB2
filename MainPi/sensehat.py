@@ -89,6 +89,8 @@ def camera_thread():
 	global camera2_blink_thread
 	camera2_blink_thread = Thread(target=camera2_blink).start()
 	Thread(target=parse_camera_data, args=(data,)).start()
+	
+	Thread(target=receive_break).start()
 
 def receive_break():
 	data, addr= s2.recvfrom(1024)
