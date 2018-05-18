@@ -10,6 +10,18 @@ def get_ozone():
 
 	return ppm
 
+def get_altitude():
+	bus.write_byte_data(0x60, 0x26, 0xB9)
+	bus.write_byte_data(0x60, 0x13, 0x07)
+	bus.write_byte_data(0x60, 0x26, 0xB9)
+	time.sleep(1)
+	data = bus.read_i2c_block_data(0x60, 0x00, 6)
+
+	tHeight = ((data[1] * 65536) + (data[2] * 256) + (data[3] & 0xf0)) / 16
+	altitude = tHeight / 16.0
+	
+	return altitude
+
 def get_externals():
 	bus.write_byte_data(0x60, 0x26, 0xB9)
 	bus.write_byte_data(0x60, 0x13, 0x07)

@@ -57,6 +57,9 @@ def log_measurments():
 		temperature = sense.get_temperature()
 		pressure = sense.get_pressure()
 		altitude, exTemp, exPressure = i2cSensors.get_externals()
+		#if altitude > (share.alt + 600) and share.alt != 0:
+		if abs(share.alt - altitude) > 600 and share.alt != 0:
+			altitude = i2cSensors.get_altitude()
 		altitude = round(altitude)
 		share.oldOldAlt = share.oldAlt
 		share.oldAlt = share.alt
