@@ -103,10 +103,14 @@ def camera_thread():
 	Thread(target=receive_break).start()
 
 def receive_break():
-	data, addr= s2.recvfrom(1024)
-	if data.decode() == "BREAK":
-		global breakNow
-		breakNow = True
+	while True
+		data, addr= s2.recvfrom(1024)
+		if data.decode() == "BREAK" and addr == cam01_addr:
+			global breakNow1
+			breakNow1 = True
+		if data.decode() == "BREAK" and addr == cam02_addr:
+			global breakNow2
+			breakNow2 = True
 
 def parse_camera_data(data):
 	if data:
@@ -146,7 +150,7 @@ def camera1_blink(sleepTime=0.5, justOnce=False):
 		if on:
 			sense.set_pixel(7,0,[0,0,0])
 			on = False
-			if breakNow:
+			if breakNow1:
 				return
 		else:
 			sense.set_pixel(7,0,[0,0,255])
@@ -165,7 +169,7 @@ def camera2_blink(sleepTime=0.5, justOnce=False):
 		if on:
 			sense.set_pixel(5,0,[0,0,0])
 			on = False
-			if breakNow:
+			if breakNow2:
 				return
 		else:
 			sense.set_pixel(5,0,[0,0,255])
