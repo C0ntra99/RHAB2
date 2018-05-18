@@ -70,7 +70,7 @@ def take_picture():
 			print('Pop start')
 			record(hostname+'-balloonPop.h264', '/home/pi/localVideos/',2)
 			print('Pop stop')
-		elif alt < endAlt and 3 not in doneVideos:
+		elif alt < endAlt and 3 not in doneVideos and 2 in doneVideos:
 			print('End start')
 			record(hostname+'-balloonEnd.h264', '/home/pi/localVideos/',3)
 			print('End stop')
