@@ -5,6 +5,7 @@ from threading import Thread
 from Connectivity import connectivity
 from picamera import PiCamera, Color
 import datetime
+import beeper
 
 camera = PiCamera()
 camera.resolution = (1920, 1080)
@@ -43,13 +44,13 @@ def record(filename, location, video, amount=120):##CHANGE
 	##get last little bit of the flight
 	if video == 3:
 		camera.start_recording(location+filename)
-		while not alt == oldAlt and 3 not in doneVideos and 2 in doneVideos:
+		while not alt == oldAlt == oldOldAlt and 3 not in doneVideos and 2 in doneVideos:
 			time.sleep(6)
 		camera.stop_recording()
 		doneVideos.append(3)
 
 def is_falling(oldAlt):
-	if oldAlt > (alt + 10):
+	if oldAlt > alt and oldOldAlt > oldAlt:
 		return True
 	else:
 		return False
@@ -102,6 +103,7 @@ def take_picture():
 def main():
 	global alt
 	global oldAlt
+	global oldOldAlt
 	alt = 0
 	print("[=]Waiting for command")
 	while True:
@@ -113,8 +115,9 @@ def main():
 		##TEST THIS
 		if 'ALT' in data.decode():
 
+			oldOldAlt = oldAlt
 			oldAlt = alt
-			alt = float(data.decode()[4:])
+			alt = int(data.decode()[4:])
 
 		else:
 			continue

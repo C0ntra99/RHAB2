@@ -33,7 +33,7 @@ s2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s2.bind(("192.168.0.1",5007))
 sense = SenseHat()
 sense.clear()
-sense.set_imu_config(False, False, True) #compass, gyro, accel
+#sense.set_imu_config(False, False, True) #compass, gyro, accel
 hostname = socket.gethostname()
 share.init()
 
@@ -58,6 +58,7 @@ def log_measurments():
 		pressure = sense.get_pressure()
 		altitude, exTemp, exPressure = i2cSensors.get_externals()
 		altitude = round(altitude)
+		share.oldOldAlt = share.oldAlt
 		share.oldAlt = share.alt
 		share.alt = altitude
 		ozone = i2cSensors.get_ozone()
@@ -68,9 +69,11 @@ def log_measurments():
 		main.write(string)
 		Thread(target=measurement_blink, kwargs={'justOnce':True}).start()
 		##TEST THIS
-		acceleration = sense.get_accelerometer()
-		if acceleration == (0.0, 0.0, 0.0):
-			print("AHHHHHHHHHHHHHHHHHHHHHH")
+		#acceleration = sense.get_accelerometer()
+		#print(sense.get_accelerometer())
+		#print(sense.get_accelerometer_raw())
+		#if acceleration == (0.0, 0.0, 0.0):
+		#	print("AHHHHHHHHHHHHHHHHHHHHHH")
 		s.sendto(('ALT:'+str(altitude)).encode(),(cam01_addr, 5005))
 		s.sendto(('ALT:'+str(altitude)).encode(),(cam02_addr, 5005))
 		print("Altitude:", altitude)
