@@ -75,6 +75,7 @@ def take_picture():
 			record(hostname+'-balloonEnd.h264', '/home/pi/localVideos/',3)
 			print('End stop')
 			s2.sendto(("BREAK").encode(), ("192.168.0.1",5007))
+			beeper.beep(True)
 			break
 		else:
 			pass
