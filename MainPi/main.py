@@ -78,7 +78,7 @@ def log_measurments():
 		#print(sense.get_accelerometer_raw())
 		#if acceleration == (0.0, 0.0, 0.0):
 		#	print("AHHHHHHHHHHHHHHHHHHHHHH")
-		s.sendto(('ALT:'+str(altitude)).encode(),(cam01_addr, 5005))
+		#s.sendto(('ALT:'+str(altitude)).encode(),(cam01_addr, 5005))
 		s.sendto(('ALT:'+str(altitude)).encode(),(cam02_addr, 5005))
 		print("Altitude:", altitude)
 
@@ -92,11 +92,11 @@ def measurement_thread():
 def camera_thread():
 	LOGFILE.write(str(log_time)+"[=]Sending 'run' command...")
 
-	s.sendto("Run".encode(),(cam01_addr,5005))
-	data, addr= s2.recvfrom(1024)
-	global camera1_blink_thread
-	camera1_blink_thread = Thread(target=camera1_blink).start()
-	Thread(target=parse_camera_data, args=(data,)).start()
+	#s.sendto("Run".encode(),(cam01_addr,5005))
+	#data, addr= s2.recvfrom(1024)
+	#global camera1_blink_thread
+	#camera1_blink_thread = Thread(target=camera1_blink).start()
+	#Thread(target=parse_camera_data, args=(data,)).start()
 
 	s.sendto('Run'.encode(),(cam02_addr, 5005))
 	data, addr= s2.recvfrom(1024)
@@ -109,9 +109,9 @@ def camera_thread():
 def receive_break():
 	while True:
 		data, addr= s2.recvfrom(1024)
-		if data.decode() == "BREAK" and addr == cam01_addr:
-			global breakNow1
-			breakNow1 = True
+		#if data.decode() == "BREAK" and addr == cam01_addr:
+		#	global breakNow1
+		#	breakNow1 = True
 		if data.decode() == "BREAK" and addr == cam02_addr:
 			global breakNow2
 			breakNow2 = True
