@@ -106,7 +106,7 @@ def camera_thread():
 	Thread(target=receive_break).start()
 
 def receive_break():
-	while True
+	while True:
 		data, addr= s2.recvfrom(1024)
 		if data.decode() == "BREAK" and addr == cam01_addr:
 			global breakNow1
