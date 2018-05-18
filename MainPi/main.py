@@ -38,7 +38,8 @@ hostname = socket.gethostname()
 share.init()
 
 
-breakNow = False
+breakNow1 = False
+breakNow2 = False
 ##Log file stuff
 #global LOGFILE
 LOGFILE = open("/home/pi/RHAB2/MainPi/Log.txt", "a")
