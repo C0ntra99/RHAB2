@@ -106,6 +106,8 @@ def main():
 	global oldAlt
 	global oldOldAlt
 	alt = 0
+	oldAlt = 0
+	oldOldAlt = 0
 	print("[=]Waiting for command")
 	while True:
 		data, addr = s.recvfrom(1024)
