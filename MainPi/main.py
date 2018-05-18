@@ -33,8 +33,10 @@ s2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s2.bind(("192.168.0.1",5007))
 sense = SenseHat()
 sense.clear()
+sense.set_imu_config(False, False, True) #compass, gyro, accel
 hostname = socket.gethostname()
 share.init()
+
 
 breakNow = False
 ##Log file stuff
@@ -66,6 +68,9 @@ def log_measurments():
 		main.write(string)
 		Thread(target=measurement_blink, kwargs={'justOnce':True}).start()
 		##TEST THIS
+		acceleration = sense.get_accelerometer()
+		if acceleration == (0.0, 0.0, 0.0):
+			print("AHHHHHHHHHHHHHHHHHHHHHH")
 		s.sendto(('ALT:'+str(altitude)).encode(),(cam01_addr, 5005))
 		s.sendto(('ALT:'+str(altitude)).encode(),(cam02_addr, 5005))
 		print("Altitude:", altitude)
