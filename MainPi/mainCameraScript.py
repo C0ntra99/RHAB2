@@ -66,6 +66,7 @@ def take_picture():
 			record(hostname+'-balloonEnd.h264', '/home/pi/localVideos/',3)
 			print('End stop')
 			share.done = True
+			beeper.beep()
 			break
 		else:
 			pass
