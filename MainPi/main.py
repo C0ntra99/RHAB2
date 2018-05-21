@@ -47,8 +47,8 @@ LOGFILE = open("/home/pi/RHAB2/MainPi/Log.txt", "a")
 def log_measurments():
 	logName = "Log-{:02d}-{:02d}-{:04d}.txt".format(log_time.month, log_time.day, log_time.year)
 	try:
-		if not os.path.exists("/home/pi/RHAB2/MainPi/measurments/" + logName):
-			with open("/home/pi/RHAB2/MainPi/measurments/" + logName,"a+") as main:
+		if not os.path.exists("/home/pi/RHAB2/MainPi/measurements/" + logName):
+			with open("/home/pi/RHAB2/MainPi/measurements/" + logName,"a+") as main:
 				main.write("{0:s},{1:s},{2:.04f},{3:2s},{4:4s},{5:4s},{6:4s},{7:4s},{8:4s}\n".format("date", "time", "humidity", "temperature", "pressure","altitude","ozone","ext press", "ext temp"))
 	except:
 		LOGFILE.write(str(log_time)+"[!]Log file is locked.")
@@ -73,11 +73,6 @@ def log_measurments():
 		main.write(string)
 		Thread(target=measurement_blink, kwargs={'justOnce':True}).start()
 		##TEST THIS
-		#acceleration = sense.get_accelerometer()
-		#print(sense.get_accelerometer())
-		#print(sense.get_accelerometer_raw())
-		#if acceleration == (0.0, 0.0, 0.0):
-		#	print("AHHHHHHHHHHHHHHHHHHHHHH")
 		#s.sendto(('ALT:'+str(altitude)).encode(),(cam01_addr, 5005))
 		s.sendto(('ALT:'+str(altitude)).encode(),(cam02_addr, 5005))
 		print("Altitude:", altitude)
