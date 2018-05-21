@@ -11,4 +11,3 @@ def beep(status):
 	if not status:
 		GPIO.output(22, False)
 
-beep(False)
