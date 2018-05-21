@@ -71,7 +71,7 @@ def take_picture():
 		log_time = datetime.datetime.now()
 		nowDate = "{:02d}/{:02d}/{:04d}".format(log_time.month, log_time.day, log_time.year)
 		nowTime = "{:02d}:{:02d}:{:02d}".format(log_time.hour, log_time.minute, log_time.second)
-			##Check Altitude to whatever we want
+		##Check Altitude to whatever we want
 		if 1 not in doneVideos:
 			print('video start')
 			record(hostname+'-beginningVideo.h264', '/home/pi/localVideos/', 1)
