@@ -207,7 +207,6 @@ def main_camera():
 	mainCameraScript.take_picture()
 
 def main():
-	
 	thread_connectivity = Thread(target=connectivity)
 	thread_connectivity.start()
 

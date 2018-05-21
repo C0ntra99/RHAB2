@@ -10,7 +10,7 @@ import beeper
 camera = PiCamera()
 camera.resolution = (1920, 1080)
 
-##import picamera SHIT
+##import picamera
 doneVideos = []
 hostname = socket.gethostname()
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -55,6 +55,16 @@ def is_falling(oldAlt):
 	else:
 		return False
 
+def tp(picture, nowDate, nowtime):
+	##Make server file and change date
+	camera.resolution = (3280, 2464)
+	camera.annotate_text = "Date: " + nowDate + "\nTime: " + nowTime + "\nAltitude: " + str(alt)
+	camera.annotate_text_size = 25
+	camera.annotate_foreground = Color('white')
+	camera.capture(picture)
+	##Take picture then save it on the file server
+	
+
 def take_picture():
 	pic = 0
 	while True:
@@ -81,23 +91,17 @@ def take_picture():
 			pass
 		if connectivity():
 			print("[+]Conenction: Picture saved on server")
-			##Make server file and change date
-			camera.resolution = (3280, 2464)
-			camera.annotate_text = "Date: " + nowDate + "\nTime: " + nowTime + "\nAltitude: " + str(alt)
-			camera.annotate_text_size = 25
-			camera.annotate_foreground = Color('white')
-			##Take picture then save it on the file server
-			camera.capture('/home/pi/serverPictures/'+hostname+'_{0:s}_{1:d}.jpg'.format(nowTime.replace(":","-"), pic))
+			Thread(target=tp, args=('/home/pi/serverPictures/'+hostname+'_{0:s}_{1:d}.jpg'.format(nowTime.replace(":","-"), pic), nowDate, nowTime)).start()
 		else:
 			print("[!]No Connection: Picture saved locally")
-			camera.resolution = (3280, 2464)
-			camera.annotate_text = "Date: " + nowDate + "\nTime: " + nowTime + "\nAltitude: " + str(alt)
-			camera.annotate_text_size = 25
-			camera.annotate_foreground = Color('white')
-			##Change the path to the local folder
-			camera.capture('/home/pi/localPictures/'+hostname+'_{0:s}_{1:d}.jpg'.format(nowTime.replace(":","-"), pic))
+			Thread(target=tp, args=('/home/pi/localPictures/'+hostname+'_{0:s}_{1:d}.jpg'.format(nowTime.replace(":","-"), pic), nowDate, nowTime)).start()
 		pic += 1
-		time.sleep(6)
+		
+		try:
+			time.sleep(6)
+		except KeyboardInterrupt:
+			camera.close()
+			exit()
 
 	camera.close()
 
