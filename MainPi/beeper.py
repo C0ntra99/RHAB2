@@ -11,4 +11,3 @@ def beep():
         time.sleep(5)
         GPIO.output(22, False)
 
-beep()

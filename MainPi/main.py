@@ -51,7 +51,7 @@ def log_measurments():
 			with open("/home/pi/RHAB2/MainPi/measurements/" + logName,"a+") as main:
 				main.write("{0:s},{1:s},{2:.04f},{3:2s},{4:4s},{5:4s},{6:4s},{7:4s},{8:4s}\n".format("date", "time", "humidity", "temperature", "pressure","altitude","ozone","ext press", "ext temp"))
 	except:
-		LOGFILE.write(str(log_time)+"[!]Log file is locked.")
+		LOGFILE.write(str(log_time)+"[!]Log file is locked.\n")
 
 	with open("/home/pi/RHAB2/MainPi/measurments/" + logName,"a") as main:
 		humidity = sense.get_humidity()
@@ -77,7 +77,7 @@ def log_measurments():
 		s.sendto(('ALT:'+str(altitude)).encode(),(cam02_addr, 5005))
 		print("Altitude:", altitude)
 
-	LOGFILE.write(str(log_time)+"[]File has been written")
+	LOGFILE.write(str(log_time)+"[]File has been written.\n")
 
 def measurement_thread():
 	while True:
@@ -85,7 +85,7 @@ def measurement_thread():
 		time.sleep(6)
 
 def camera_thread():
-	LOGFILE.write(str(log_time)+"[=]Sending 'run' command...")
+	LOGFILE.write(str(log_time)+"[=]Sending 'run' command...\n")
 
 	#s.sendto("Run".encode(),(cam01_addr,5005))
 	#data, addr= s2.recvfrom(1024)
@@ -116,11 +116,11 @@ def parse_camera_data(data):
 		sense.clear()
 		sense.show_message(data.decode())
 
-		LOGFILE.write(str(log_time)+"[+]Cameras have started")
+		LOGFILE.write(str(log_time)+"[+]Cameras have started.\n")
 
 		##Also start the mainPi camera
 	else:
-		LOGFILE.write(str(log_time)+"[!]Error cameras not started")
+		LOGFILE.write(str(log_time)+"[!]Error cameras not started.\n")
 		start_cameras()
 
 def measurement_blink(sleepTime=0.5, justOnce=False):
@@ -214,7 +214,7 @@ def main():
 	thread_time = Thread(target=keep_time)
 	thread_time.start()
 
-	LOGFILE.write(str(log_time)+"[+]Script started")
+	LOGFILE.write(str(log_time)+"[+]Script started.\n")
 
 	print("[=]Starting joystick input")
 
@@ -226,7 +226,7 @@ def main():
 				Thread(target=measurement_thread).start()
 				print("Take measuements")
 				sense.show_message("Taking measurments")
-				LOGFILE.write(str(log_time)+"[+]Measurments have started")
+				LOGFILE.write(str(log_time)+"[+]Measurments have started.\n")
 				runningList.append("take_measurments")
 			else:
 				continue
@@ -236,7 +236,7 @@ def main():
 				Thread(target=camera_thread).start()
 				Thread(target=main_camera).start()
 
-				LOGFILE.write(str(log_time)+"[+]Cameras have started")
+				LOGFILE.write(str(log_time)+"[+]Cameras have started.\n")
 				runningList.append("start_cameras")
 			else:
 				continue
