@@ -114,7 +114,7 @@ def receive_break():
 def parse_camera_data(data):
 	if data:
 		sense.clear()
-		sense.show_message(data.decode())
+		#sense.show_message(data.decode())
 
 		LOGFILE.write(str(log_time)+"[+]Cameras have started.\n")
 
@@ -224,7 +224,7 @@ def main():
 			if "take_measurments" not in runningList:
 				Thread(target=measurement_thread).start()
 				print("Take measuements")
-				sense.show_message("Taking measurments")
+				#sense.show_message("Taking measurments")
 				LOGFILE.write(str(log_time)+"[+]Measurments have started.\n")
 				runningList.append("take_measurments")
 			else:
