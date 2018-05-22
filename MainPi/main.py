@@ -53,7 +53,7 @@ def log_measurments():
 	except:
 		LOGFILE.write(str(log_time)+"[!]Log file is locked.\n")
 
-	with open("/home/pi/RHAB2/MainPi/measurments/" + logName,"a") as main:
+	with open("/home/pi/RHAB2/MainPi/measurements/" + logName,"a") as main:
 		humidity = sense.get_humidity()
 		temperature = sense.get_temperature()
 		pressure = sense.get_pressure()
