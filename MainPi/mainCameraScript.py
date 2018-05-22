@@ -49,7 +49,7 @@ def is_falling():
 def tp(picture, nowDate, nowTime):
 	##Make server file and change date
 	camera.resolution = (3280, 2464)
-	camera.annotate_text = "Date: " + nowDate + "\nTime: " + nowTime + "\nAltitude: " + str(alt)
+	camera.annotate_text = "Date: " + nowDate + "\nTime: " + nowTime + "\nAltitude: " + str(share.alt)
 	camera.annotate_text_size = 25
 	camera.annotate_foreground = Color('white')
 	camera.capture(picture)
