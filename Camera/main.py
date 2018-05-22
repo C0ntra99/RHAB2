@@ -101,6 +101,7 @@ def take_picture():
 			time.sleep(6)
 		except KeyboardInterrupt:
 			camera.close()
+			s2.sendto(("BREAK").encode(), ("192.168.1.1",5007))
 			exit()
 
 	camera.close()
