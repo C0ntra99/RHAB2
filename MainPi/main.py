@@ -30,7 +30,7 @@ with open("/var/lib/misc/dnsmasq.leases","r") as lease_file:
 #global s2
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s2.bind(("192.168.0.1",5007))
+s2.bind(("192.168.1.1",5007))
 sense = SenseHat()
 sense.clear()
 #sense.set_imu_config(False, False, True) #compass, gyro, accel

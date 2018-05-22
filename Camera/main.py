@@ -20,7 +20,7 @@ s2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.bind(('0.0.0.0',5005))
 
 def confirmation():
-	s2.sendto((hostname+" Started").encode(), ("192.168.0.1",5007))
+	s2.sendto((hostname+" Started").encode(), ("192.168.1.1",5007))
 
 def record(filename, location, video, amount=120):##CHANGE
 	camera.resolution = (1920, 1080)
@@ -84,7 +84,7 @@ def take_picture():
 			print('End start')
 			record(hostname+'-balloonEnd.h264', '/home/pi/localVideos/',3)
 			print('End stop')
-			s2.sendto(("BREAK").encode(), ("192.168.0.1",5007))
+			s2.sendto(("BREAK").encode(), ("192.168.1.1",5007))
 			beeper.beep(True)
 			break
 		else:
