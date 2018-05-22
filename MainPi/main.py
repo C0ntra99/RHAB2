@@ -75,7 +75,7 @@ def log_measurments():
 		##TEST THIS
 		s.sendto(('ALT:'+str(altitude)).encode(),(cam01_addr, 5005))
 		s.sendto(('ALT:'+str(altitude)).encode(),(cam02_addr, 5005))
-		print("Altitude:", altitude)
+		#print("Altitude:", altitude)
 
 	LOGFILE.write(str(log_time)+"[]File has been written.\n")
 
