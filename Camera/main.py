@@ -22,7 +22,7 @@ s.bind(('0.0.0.0',5005))
 def confirmation():
 	s2.sendto((hostname+" Started").encode(), ("192.168.1.1",5007))
 
-def record(filename, location, video, amount=120):##CHANGE
+def record(filename, location, video, amount=60):##CHANGE
 	camera.resolution = (1920, 1080)
 	##record first 30 minutes of flight
 	if video == 1:
@@ -58,7 +58,6 @@ def is_falling():
 def tp(picture, nowDate, nowTime):
 	##Make server file and change date
 	camera.resolution = (3280, 2464)
-	global alt
 	camera.annotate_text = "Date: " + nowDate + "\nTime: " + nowTime + "\nAltitude: " + str(alt)
 	camera.annotate_text_size = 25
 	camera.annotate_foreground = Color('white')
@@ -77,7 +76,7 @@ def take_picture():
 			print('video start')
 			record(hostname+'-beginningVideo.h264', '/home/pi/localVideos/', 1)
 			print('video stop')
-		if alt > 25000 and 2 not in doneVideos:
+		if alt > 300 and oldAlt > 300 and 2 not in doneVideos:
 			print('Pop start')
 			record(hostname+'-balloonPop.h264', '/home/pi/localVideos/',2)
 			print('Pop stop')
