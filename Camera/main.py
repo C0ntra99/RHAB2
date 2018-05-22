@@ -49,15 +49,16 @@ def record(filename, location, video, amount=120):##CHANGE
 		camera.stop_recording()
 		doneVideos.append(3)
 
-def is_falling(oldAlt):
+def is_falling():
 	if oldAlt > alt and oldOldAlt > oldAlt:
 		return True
 	else:
 		return False
 
-def tp(picture, nowDate, nowtime):
+def tp(picture, nowDate, nowTime):
 	##Make server file and change date
 	camera.resolution = (3280, 2464)
+	global alt
 	camera.annotate_text = "Date: " + nowDate + "\nTime: " + nowTime + "\nAltitude: " + str(alt)
 	camera.annotate_text_size = 25
 	camera.annotate_foreground = Color('white')
