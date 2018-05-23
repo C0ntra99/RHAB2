@@ -13,7 +13,7 @@ doneVideos = []
 hostname = "MainPi"
 share.init()
 
-def record(filename, location, video, amount=60):
+def record(filename, location, video, amount=1800):
 	camera.resolution = (1920, 1080)
 	##record first 30 minutes of flight
 	if video == 1:
@@ -28,7 +28,7 @@ def record(filename, location, video, amount=60):
 		camera.start_recording(location+filename)
 		while not is_falling():
 			time.sleep(6)
-		time.sleep(10)
+		time.sleep(60)
 		##CHANGE
 		camera.stop_recording()
 		doneVideos.append(2)
@@ -50,7 +50,7 @@ def tp(picture, nowDate, nowTime):
 	##Make server file and change date
 	camera.resolution = (3280, 2464)
 	camera.annotate_text = "Date: " + nowDate + "\nTime: " + nowTime + "\nAltitude: " + str(share.alt)
-	camera.annotate_text_size = 25
+	camera.annotate_text_size = 50
 	camera.annotate_foreground = Color('white')
 	camera.capture(picture)
 	##Take picture then save it on the file server
@@ -66,7 +66,7 @@ def take_picture():
 			print('video start')
 			record(hostname+'-beginningVideo.h264', '/home/pi/localVideos/', 1)
 			print('video stop')
-		if share.alt > 300 and share.oldAlt > 300 and 2 not in doneVideos:
+		if share.alt > 25000 and share.oldAlt > 25000 and 2 not in doneVideos:
 			print('Pop start')
 			record(hostname+'-balloonPop.h264', '/home/pi/localVideos/',2)
 			print('Pop stop')
