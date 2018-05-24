@@ -35,27 +35,19 @@ def record(filename, location, video, amount=1800):##CHANGE
 	##try to get the pop at 25000 meter
 	if video == 2:
 		camera.start_recording(location+filename)
-		##CHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGE
-		#while not is_falling():
-		#	time.sleep(6)
-		#time.sleep(60)
-		time.sleep(1800)
+		while not is_falling():
+			time.sleep(6)
+		time.sleep(60)
 		##CHANGE
 		camera.stop_recording()
 		doneVideos.append(2)
 	##get last little bit of the flight
 	if video == 3:
 		camera.start_recording(location+filename)
-		##CHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGE
-		#while not alt == oldAlt == oldOldAlt and 3 not in doneVideos and 2 in doneVideos:
-		#	time.sleep(6)
-		time.sleep(1800)
+		while not alt == oldAlt == oldOldAlt and 3 not in doneVideos and 2 in doneVideos:
+			time.sleep(6)
 		camera.stop_recording()
 		doneVideos.append(3)
-	if video == 4:
-		camera.start_recording(location+filename)
-		time.sleep(14400)
-		camera.stop_recording()
 
 def is_falling():
 	if oldAlt > alt and oldOldAlt > oldAlt:
@@ -75,8 +67,6 @@ def tp(picture, nowDate, nowTime):
 
 def take_picture():
 	pic = 0
-	global startTime
-	startTime = time.time()
 	while True:
 		log_time = datetime.datetime.now()
 		nowDate = "{:02d}/{:02d}/{:04d}".format(log_time.month, log_time.day, log_time.year)
@@ -86,23 +76,14 @@ def take_picture():
 			print('video start')
 			record(hostname+'-beginningVideo.h264', '/home/pi/localVideos/', 1)
 			print('video stop')
-		##CHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGE
-		#if alt > 25000 and oldAlt > 25000 and 2 not in doneVideos:
-		if time.time() > startTime + 9000 and 2 not in doneVideos:
+		if alt > 25000 and oldAlt > 25000 and 2 not in doneVideos:
 			print('Pop start')
 			record(hostname+'-balloonPop.h264', '/home/pi/localVideos/',2)
 			print('Pop stop')
-		##CHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAANGE
-		#elif alt < endAlt and 3 not in doneVideos and 2 in doneVideos:
-		elif time.time() > startTime + 14400 and 3 not in doneVideos:
+		elif alt < endAlt and 3 not in doneVideos and 2 in doneVideos:
 			print('End start')
 			record(hostname+'-balloonEnd.h264', '/home/pi/localVideos/',3)
 			print('End stop')
-			s2.sendto(("BREAK").encode(), ("192.168.1.1",5007))
-			beeper.beep(True)
-			break
-		elif time.time() > startTime + 14400 and 2 not in doneVideos:
-			record('Failsafe.h264', '/home/pi/localVideos/',4)
 			s2.sendto(("BREAK").encode(), ("192.168.1.1",5007))
 			beeper.beep(True)
 			break
