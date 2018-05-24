@@ -12,12 +12,10 @@ import os
 
 
 ##Camera IP address
-##Not how you use global
-#global cam01_addr
-#global cam02_addr
 cam01_addr = None
 cam02_addr = None
 
+# Dynamically grab ip leases for the cameras
 with open("/var/lib/misc/dnsmasq.leases","r") as lease_file:
 	for line in lease_file.readlines():
 		if "cameraPi01" in line:
@@ -25,15 +23,15 @@ with open("/var/lib/misc/dnsmasq.leases","r") as lease_file:
 		if "cameraPi02" in line:
 			cam02_addr = line.split(" ")[2]
 
-##UDP sockets
-#global s
-#global s2
+##UDP sockets to send run command and recieve ack
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s2 = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s2.bind(("192.168.1.1",5007))
+##init of the sensehat
 sense = SenseHat()
 sense.clear()
-#sense.set_imu_config(False, False, True) #compass, gyro, accel
+
+
 hostname = socket.gethostname()
 share.init()
 
@@ -44,7 +42,9 @@ breakNow2 = False
 #global LOGFILE
 LOGFILE = open("/home/pi/RHAB2/MainPi/Log.txt", "a")
 
+
 def log_measurments():
+	##Create a log name for the log.
 	logName = "Log-{:02d}-{:02d}-{:04d}.txt".format(log_time.month, log_time.day, log_time.year)
 	try:
 		if not os.path.exists("/home/pi/RHAB2/MainPi/measurements/" + logName):
@@ -53,15 +53,20 @@ def log_measurments():
 	except:
 		LOGFILE.write(str(log_time)+"[!]Log file is locked.\n")
 
+	##Open the log and get the measurments from the sensehat and the other sensors (oxone, altimeter)
 	with open("/home/pi/RHAB2/MainPi/measurements/" + logName,"a") as main:
 		humidity = sense.get_humidity()
 		temperature = sense.get_temperature()
 		pressure = sense.get_pressure()
 		altitude, exTemp, exPressure = i2cSensors.get_externals()
-		#if altitude > (share.alt + 600) and share.alt != 0:
+
+		##If the altitude has jumped over 600 meters since the last measuement then ignore it and grab another one
 		if abs(share.alt - altitude) > 600 and share.alt != 0:
 			altitude = i2cSensors.get_altitude()
+		##Round the altitude to a whole number
 		altitude = round(altitude)
+
+		##Create 2 buffers for error checking
 		share.oldOldAlt = share.oldAlt
 		share.oldAlt = share.alt
 		share.alt = altitude
@@ -71,22 +76,28 @@ def log_measurments():
 
 		string = "{0:s},{1:s},{2:.04f},{3:.02f},{4:.04f},{5:6d},{6:.04f},{7:.04f},{8:.02f}\n".format(date, Time, humidity, temperature, pressure, altitude, ozone, exPressure, exTemp)
 		main.write(string)
+
+		##Blink a red light on the sensehat
 		Thread(target=measurement_blink, kwargs={'justOnce':True}).start()
-		##TEST THIS
+
+		##Send the altitude to the other cameras over sockets
 		s.sendto(('ALT:'+str(altitude)).encode(),(cam01_addr, 5005))
 		s.sendto(('ALT:'+str(altitude)).encode(),(cam02_addr, 5005))
 		#print("Altitude:", altitude)
 
 	LOGFILE.write(str(log_time)+"[]File has been written.\n")
 
+##Handles the measurment thread
 def measurement_thread():
 	while True:
 		Thread(target=log_measurments).start()
 		time.sleep(6)
 
+##Starts the cameras
 def camera_thread():
 	LOGFILE.write(str(log_time)+"[=]Sending 'run' command...\n")
 
+	##Send a Run command to the camera and wait for ack from the camera and start LEDs on the sense hat to blink
 	s.sendto("Run".encode(),(cam01_addr,5005))
 	data, addr= s2.recvfrom(1024)
 	global camera1_blink_thread
@@ -98,9 +109,10 @@ def camera_thread():
 	global camera2_blink_thread
 	camera2_blink_thread = Thread(target=camera2_blink).start()
 	Thread(target=parse_camera_data, args=(data,)).start()
-	
+
 	Thread(target=receive_break).start()
 
+##Incase the cameras stop this will stop the LEDS from blinking
 def receive_break():
 	while True:
 		data, addr= s2.recvfrom(1024)
@@ -139,7 +151,7 @@ def measurement_blink(sleepTime=0.5, justOnce=False):
 	sense.set_pixel(7,7,[255,0,0])
 	time.sleep(sleepTime)
 	sense.set_pixel(7,7,[0,0,0])
-	
+
 def camera1_blink(sleepTime=0.5, justOnce=False):
 	def stop():
 		stop = True
@@ -158,7 +170,7 @@ def camera1_blink(sleepTime=0.5, justOnce=False):
 	sense.set_pixel(7,0,[0,0,255])
 	time.sleep(sleepTime)
 	sense.set_pixel(7,0,[0,0,0])
-	
+
 def camera2_blink(sleepTime=0.5, justOnce=False):
 	def stop():
 		stop = True
@@ -177,7 +189,7 @@ def camera2_blink(sleepTime=0.5, justOnce=False):
 	sense.set_pixel(5,0,[0,0,255])
 	time.sleep(sleepTime)
 	sense.set_pixel(5,0,[0,0,0])
-	
+
 def cameraMain_blink(sleepTime=0.5, justOnce=False):
 	def stop():
 		stop = True
@@ -195,6 +207,7 @@ def cameraMain_blink(sleepTime=0.5, justOnce=False):
 	time.sleep(sleepTime)
 	sense.set_pixel(3,0,[0,0,0])
 
+##Thread to keep the time for the whole script
 def keep_time():
 	global log_time
 	while True:
